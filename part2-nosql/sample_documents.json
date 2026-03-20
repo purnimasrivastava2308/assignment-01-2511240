@@ -1,0 +1,66 @@
+[
+  {
+    "_id": "69bc03090fdbdaf2bf0763a7",
+    "name": "IFB 8kg 5 Star AI Front Load Washing Machine",
+    "category": "Electronics",
+    "brand": "IFB",
+    "price": 38490.00,
+    "specifications": {
+      "model": "Senator Neo VX",
+      "voltage": "220-240V",
+      "energy_rating": "5 Star",
+      "warranty": "4 years comprehensive",
+      "key_features": [
+        "AI Powered",
+        "Steam Wash",
+        "Aqua Energie",
+        "Cradle Wash"
+      ],
+      "max_spin_speed": "1200 RPM"
+    },
+    "is_in_stock": true
+  },
+  {
+    "_id": "69bc03090fdbdaf2bf0763a8",
+    "name": "Fabindia Cotton Silk Ethnic Co-ord Set",
+    "category": "Clothing",
+    "brand": "Fabindia",
+    "price": 4599.00,
+    "materials": [
+      "80% Cotton",
+      "20% Silk"
+    ],
+    "available_sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "details": {
+      "color": "Indigo Blue",
+      "fit": "Regular Fit",
+      "occasion": "Festive",
+      "wash_care": "Dry Clean Only"
+    }
+  },
+  {
+    "_id": "69bc03090fdbdaf2bf0763a9",
+    "name": "Raw Pressery Cold Pressed Apple Juice",
+    "category": "Groceries",
+    "brand": "Raw Pressery",
+    "price": 150.00,
+    "expiry_date": "2026-05-10",
+    "dietary_labels": [
+      "No Added Sugar",
+      "No Preservatives",
+      "Vegan"
+    ],
+    "nutrition": {
+      "size": "250ml",
+      "calories": 110,
+      "shelf_life": "21 Days"
+    },
+    "storage": "Must be refrigerated at 0-4°C"
+  }
+]

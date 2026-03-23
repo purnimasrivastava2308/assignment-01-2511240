@@ -1,32 +1,47 @@
-Based on an analysis of the orders_flat.csv file, here are the identified database anomalies. These occur because the data is currently stored in a "flat" format where redundant information is repeated across many rows.
+# One Table, Three Problems: Why `orders_flat` Needs Normalization
 
-### Anomaly Analysis
-*1. Insert Anomaly*
+Your manager calls normalization over-engineering. The `orders_flat` dataset disagrees — it **already contains all three classic data anomalies** that a flat schema produces, not as future risks, but as present reality.
 
-- **Definition:** An insert anomaly occurs when we cannot add certain data to the database because other unrelated data is missing.
+---
 
-- **Example:** We cannot add a new product (e.g., "Webcam") into this CSV system unless someone actually orders it.
+## 1. Insert Anomaly — You Can't Add What Doesn't Exist Yet
 
-- **Citation:** Because the product_id and product_name are tied to an order_id, ***there is no way to represent a product that is currently in stock but has zero sales.*** If we tried to add a row for a new product, we would be forced to leave order_id and customer_id null, which would likely violate primary key constraints in a real database.
+### The Catch-22 of a Flat Schema
 
-*2. Update Anomaly*
+In `orders_flat`, product data only lives inside order rows. This means a new product — say, a Mechanical Keyboard — **cannot be added to the database until a customer orders it.** But customers can't order something that isn't in the system yet.
 
-- **Definition:** An update anomaly occurs when data is stored redundantly, and a change to one piece of information requires multiple updates across many rows, leading to potential inconsistencies.
+> **The result:** The database refuses to register a product unless it's already been sold — a deadlock caused entirely by schema design, not business logic.
 
-- **Example:** The office address for Sales Rep SR01 (Deepak Joshi) is inconsistent in the file.
+---
 
-- **Citation:** In Row 2 (ORD1114), the address is listed as "Mumbai HQ, ***Nariman Point***, Mumbai - 400021".
+## 2. Update Anomaly — One Fact, Stored Everywhere, Wrong Anywhere
 
-    In Row 182 (ORD1176), the address is listed as "Mumbai HQ, ***Nariman Pt***, Mumbai - 400021".
+### Repetition Is the Enemy of Accuracy
 
-    If the office moves, we have to find and update every single order ever handled by SR01. If we miss even one row, the database will have conflicting addresses for the same person.
+Customer **Neha Gupta (C006)** appears across **eight separate order rows**, her city repeated in each. One address change means eight updates — miss any one, and the database contradicts itself.
 
-*3. Delete Anomaly*
+### It Has Already Happened in This Dataset
 
-- **Definition:** A delete anomaly occurs when deleting a record inadvertently results in the loss of other unrelated, important information.
+**Kavya Rao's (C008)** sales rep office address appears as two different values:
+- `"Nariman Point"` — in most rows
+- `"Nariman Pt"` — in ORD1180, ORD1174, ORD1171, and others
 
-- **Example:** Deleting an order could result in losing the only record of a Customer's existence or a Sales Rep's details.
+> **Same rep. Same office. Two strings.** The database can no longer tell us what the correct address actually is — and that is a live update anomaly, not a hypothetical one.
 
-- **Citation:** Consider Customer C010 (Vijay Singh). If Vijay has only placed one order (e.g., ORD1092) and we decide to delete that order because it was canceled, ***we lose all of Vijay’s contact information*** (vijay@gmail.com) and his location (Chennai).
+---
 
-    In a normalized system, the Customer would exist in their own table regardless of whether they have an active order.
+## 3. Delete Anomaly — A Routine Deletion That Destroys Unrelated Data
+
+### When One Row Holds Too Much
+
+**P008 (Webcam, ₹2,100)** exists in exactly **one order: ORD1185** by Amit Verma. Delete that order — for a return, a correction, or an archive — and the Webcam **vanishes from the database entirely.** No product ID. No price. No category. Gone.
+
+> **A deletion meant to remove a transaction ends up erasing a product from existence.**
+
+---
+
+## The Verdict — Simple to Build, Dangerous to Maintain
+
+Each anomaly above shares one root cause: **customers, products, reps, and orders are all crammed into a single row.** Normalization gives each entity its own table so it can be added, updated, or deleted independently — without collateral damage.
+
+The flat table is simpler to *design once*. A normalized schema is safer to *run forever*. That's not over-engineering — **that's the whole point.**
